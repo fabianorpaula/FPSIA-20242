@@ -12,8 +12,10 @@ public class IaFps : MonoBehaviour
     public int objeto = 0;
     public float tempo = 0;
 
+    public GameObject Alvo;
+
     //Maquina de Estados
-    public enum Estados { Parado, Ronda};
+    public enum Estados { Parado, Ronda, Perseguir};
     public Estados MeuEstado;
 
     void Start()
@@ -34,8 +36,12 @@ public class IaFps : MonoBehaviour
         {
             Ronda();
         }
-      
-      
+        if (MeuEstado == Estados.Perseguir)
+        {
+            Perseguir();
+        }
+
+
     }
 
     void Parado()
@@ -70,4 +76,23 @@ public class IaFps : MonoBehaviour
             MeuEstado = Estados.Parado;
         }
     }
+
+    void Perseguir()
+    {
+        //animacao.SetBool("Ronda", true);
+        agente.speed = 40;
+        //Move o Personagem até o destino
+        agente.SetDestination(Alvo.
+            transform.position);
+    }
+
+
+    //Metodo
+
+    public void AtivaPerseguicao(GameObject o_alvo)
+    {
+        Alvo = o_alvo;
+        MeuEstado = Estados.Perseguir;
+    }
+
 }

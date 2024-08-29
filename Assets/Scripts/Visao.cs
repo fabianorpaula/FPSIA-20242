@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Visao : MonoBehaviour
 {
+    public IaFps Soldado;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,21 +24,16 @@ public class Visao : MonoBehaviour
             out hit, 40))
         {
             //Quando Vc Acertar
-            
-            /*Debug.DrawLine(transform.position, olharprafrente,
-                Color.magenta);*/
-            
             if(hit.collider.gameObject.tag == "Inimigo")
             {
                 Debug.Log("ACERTEI INIMIGO");
                 Debug.Log(hit.collider.gameObject.name);
-                Destroy(hit.collider.gameObject);
+                Soldado.AtivaPerseguicao(hit.collider.gameObject);
             }
 
         }
         else
         {
-            
             Debug.Log("Errei");
         }
     }
