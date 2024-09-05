@@ -11,11 +11,12 @@ public class IaFps : MonoBehaviour
     public List<GameObject> Destinos;
     public int objeto = 0;
     public float tempo = 0;
+    public int vida = 10;
 
     public GameObject Alvo;
 
     //Maquina de Estados
-    public enum Estados { Parado, Ronda, Perseguir};
+    public enum Estados { Parado, Ronda, Perseguir, Atacar};
     public Estados MeuEstado;
 
     void Start()
@@ -40,7 +41,10 @@ public class IaFps : MonoBehaviour
         {
             Perseguir();
         }
-
+        if (MeuEstado == Estados.Atacar)
+        {
+            Atacar();
+        }
 
     }
 
@@ -60,6 +64,8 @@ public class IaFps : MonoBehaviour
     {
         //Coloca a animação de Ronda
         animacao.SetBool("Ronda", true);
+        animacao.SetBool("Segue", false);
+        animacao.SetBool("Tiro", false);
         agente.speed = 30;
         //Move o Personagem até o destino
         agente.SetDestination(Destinos[objeto].
@@ -79,13 +85,53 @@ public class IaFps : MonoBehaviour
 
     void Perseguir()
     {
-        //animacao.SetBool("Ronda", true);
+        animacao.SetBool("Segue", true);
         agente.speed = 40;
         //Move o Personagem até o destino
         agente.SetDestination(Alvo.
             transform.position);
+        float distanciaAlvo = Vector3.Distance(
+            transform.position,
+            Alvo.transform.position);
+        if(distanciaAlvo < 15)
+        {
+            MeuEstado = Estados.Atacar;
+        }
+        if (distanciaAlvo > 30)
+        {
+            MeuEstado = Estados.Ronda;
+        }
     }
 
+
+    void Atacar()
+    {
+        animacao.SetBool("Tiro", true);
+        transform.LookAt(Alvo.
+            transform.position);
+        agente.speed = 0;
+        float distanciaAlvo = Vector3.Distance(
+            transform.position,
+            Alvo.transform.position);
+        if (distanciaAlvo > 20)
+        {
+            MeuEstado = Estados.Perseguir;
+        }
+    }
+
+
+    public void Atirei()
+    {
+        Debug.Log("DEI UM TIRO");
+    }
+
+    public void Dano()
+    {
+        vida--;
+        if(vida <= 0) {
+            Destroy(this.gameObject);
+        }
+    }
 
     //Metodo
 
