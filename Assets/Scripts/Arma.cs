@@ -4,31 +4,38 @@ using UnityEngine;
 
 public class Arma : MonoBehaviour
 {
-    public IaFps Soldado;
 
-    // Start is called before the first frame update
-    void Start()
+    public float alncearma;
+    public bool meuDano;
+    public void AtivarVel(bool ativar)
     {
-
+        meuDano = ativar;
+       
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public void Tiro()
     {
         RaycastHit hit;
 
         Vector3 olharprafrente = transform.TransformDirection(
-            Vector3.forward) * 20;
+            Vector3.forward) * alncearma;
 
         if (Physics.Raycast(transform.position, olharprafrente,
-            out hit, 20))
+            out hit, alncearma))
         {
             //Quando Vc Acertar
             if (hit.collider.gameObject.tag == "Inimigo")
             {
-                //Debug.Log("ACERTEI INIMIGO");
-                //Debug.Log(hit.collider.gameObject.name);
-                Soldado.Dano();
+                if (meuDano)
+                {
+                    hit.collider.gameObject.GetComponent<IaFps>().Dano();
+                    hit.collider.gameObject.GetComponent<IaFps>().Dano();
+                }
+                else
+                {
+                    hit.collider.gameObject.GetComponent<IaFps>().Dano();
+                }
+                
             }
 
         }

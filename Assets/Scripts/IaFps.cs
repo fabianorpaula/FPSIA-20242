@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,6 +16,15 @@ public class IaFps : MonoBehaviour
     public int vida = 10;
 
     public GameObject Alvo;
+    public Arma MinhaArma;
+    public Visao MinhaVisao;
+
+    //DADOS
+    public float nVel;
+    public int nVida;
+    public bool dano;
+    public float nDisp;
+    public float nVisao;
 
     //Maquina de Estados
     public enum Estados { Parado, Ronda, Perseguir, Atacar};
@@ -24,6 +35,13 @@ public class IaFps : MonoBehaviour
         agente = GetComponent<NavMeshAgent>();
         animacao = GetComponent<Animator>();
         MeuEstado = Estados.Parado;
+
+
+        vida = 10 + nVida;
+        MinhaVisao.alcance = 40 + nVisao;
+        MinhaArma.AtivarVel(dano);
+        MinhaArma.alncearma = 20 + nDisp;
+
     }
 
     void Update()
@@ -66,7 +84,7 @@ public class IaFps : MonoBehaviour
         animacao.SetBool("Ronda", true);
         animacao.SetBool("Segue", false);
         animacao.SetBool("Tiro", false);
-        agente.speed = 30;
+        agente.speed = 30 + nVel;
         //Move o Personagem até o destino
         agente.SetDestination(Destinos[objeto].
             transform.position);
@@ -85,44 +103,59 @@ public class IaFps : MonoBehaviour
 
     void Perseguir()
     {
-        animacao.SetBool("Segue", true);
-        agente.speed = 40;
-        //Move o Personagem até o destino
-        agente.SetDestination(Alvo.
-            transform.position);
-        float distanciaAlvo = Vector3.Distance(
-            transform.position,
-            Alvo.transform.position);
-        if(distanciaAlvo < 15)
-        {
-            MeuEstado = Estados.Atacar;
-        }
-        if (distanciaAlvo > 30)
+        if (Alvo == null)
         {
             MeuEstado = Estados.Ronda;
+        }
+        else
+        {
+            animacao.SetBool("Segue", true);
+            agente.speed = 40+ nVel;
+            //Move o Personagem até o destino
+            agente.SetDestination(Alvo.
+                transform.position);
+            float distanciaAlvo = Vector3.Distance(
+                transform.position,
+                Alvo.transform.position);
+            if (distanciaAlvo < 15)
+            {
+                MeuEstado = Estados.Atacar;
+            }
+            if (distanciaAlvo > 30)
+            {
+                MeuEstado = Estados.Ronda;
+            }
         }
     }
 
 
     void Atacar()
     {
-        animacao.SetBool("Tiro", true);
-        transform.LookAt(Alvo.
-            transform.position);
-        agente.speed = 0;
-        float distanciaAlvo = Vector3.Distance(
-            transform.position,
-            Alvo.transform.position);
-        if (distanciaAlvo > 20)
+        if(Alvo == null)
         {
-            MeuEstado = Estados.Perseguir;
+            MeuEstado = Estados.Ronda;
+        }else{
+            animacao.SetBool("Tiro", true);
+            transform.LookAt(Alvo.
+                transform.position);
+            agente.speed = 0;
+            float distanciaAlvo = Vector3.Distance(
+                transform.position,
+                Alvo.transform.position);
+            if (distanciaAlvo > 20)
+            {
+                MeuEstado = Estados.Perseguir;
+            }
         }
+
+        
     }
 
 
     public void Atirei()
     {
-        Debug.Log("DEI UM TIRO");
+        //Debug.Log("DEI UM TIRO");
+        MinhaArma.Tiro();
     }
 
     public void Dano()

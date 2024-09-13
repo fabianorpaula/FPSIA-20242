@@ -5,6 +5,8 @@ using UnityEngine;
 public class Visao : MonoBehaviour
 {
     public IaFps Soldado;
+
+    public float alcance;
     
     // Start is called before the first frame update
     void Start()
@@ -18,10 +20,10 @@ public class Visao : MonoBehaviour
         RaycastHit hit;
 
         Vector3 olharprafrente = transform.TransformDirection(
-            Vector3.forward) * 40;
+            Vector3.forward) * alcance;
 
         if(Physics.Raycast(transform.position, olharprafrente,
-            out hit, 40))
+            out hit, alcance))
         {
             //Quando Vc Acertar
             if(hit.collider.gameObject.tag == "Inimigo")
