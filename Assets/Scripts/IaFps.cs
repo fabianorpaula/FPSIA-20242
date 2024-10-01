@@ -37,6 +37,13 @@ public class IaFps : MonoBehaviour
         MeuEstado = Estados.Parado;
 
 
+
+        nVida = nVida / 2;
+        nVisao = nVisao * 3;
+        nVel = nVel * 2;
+        nDisp = nDisp * 3;
+
+
         vida = 10 + nVida;
         MinhaVisao.alcance = 40 + nVisao;
         MinhaArma.AtivarVel(dano);
